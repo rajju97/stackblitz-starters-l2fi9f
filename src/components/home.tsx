@@ -5,6 +5,37 @@ import Corousal from './pages/corousal';
 
 export default function Home() {
   const navigate = useNavigate();
+  const [user, setUser] = React.useState({
+    name: '',
+    email: '',
+    password: '',
+  });
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    fetch(
+      'https://649d55d99bac4a8e669d9791.mockapi.io/api/add_user',
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        alert('successfully added');
+        setUser({
+          name: '',
+          email: '',
+          password: '',
+        });
+        navigate('/dashboard', { state: { _id: data?._id } });
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(user),
+  };
+
   return (
     <div>
       <div className="container-fluid">
@@ -37,6 +68,10 @@ export default function Home() {
                           name="name"
                           id="name"
                           className="form-control"
+                          value={user.name}
+                          onChange={(e) =>
+                            setUser({ ...user, ['name']: e.target.value })
+                          }
                         />
                       </div>
                     </div>
@@ -48,6 +83,10 @@ export default function Home() {
                           name="email"
                           id="email"
                           className="form-control"
+                          value={user.email}
+                          onChange={(e) =>
+                            setUser({ ...user, ['email']: e.target.value })
+                          }
                         />
                       </div>
                     </div>
@@ -59,13 +98,20 @@ export default function Home() {
                           name="pass"
                           id="pass"
                           className="form-control"
+                          value={user.password}
+                          onChange={(e) =>
+                            setUser({ ...user, ['password']: e.target.value })
+                          }
                         />
                       </div>
                     </div>
                     <div className="form-row align-items-center">
                       <div className="col-12 d-flex justify-content-center form-group">
-                        <button className="btn btn-success default">
-                          Submit
+                        <button
+                          onClick={handleSubmit}
+                          className="btn btn-success default"
+                        >
+                          Login
                         </button>
                       </div>
                     </div>
